@@ -90,10 +90,19 @@ class TicTacToe:
                 self.gameRoot = tk.Tk()
                 
                 frame = tk.Frame(self.gameRoot)
+                interfaceElements = []
+                currentTurn = tk.Label(frame, text=f"Turno actual: {mainData.users[mainData.currentTurn].symbol}")
+                currentTurn.pack(pady=5)
+                interfaceElements.append(currentTurn)
+                
                 tk.Label(frame, text=f"Jugador 1: {mainData.users[0].name}").pack(pady=5)
                 tk.Label(frame, text=f"Puntos: {mainData.users[0].points}").pack()
+                tk.Label(frame, text=f"Ficha: {mainData.users[0].symbol}").pack()
+
                 tk.Label(frame, text=f"Jugador 2: {mainData.users[1].name}").pack(pady=5)
                 tk.Label(frame, text=f"Puntos: {mainData.users[1].points}").pack()
+                tk.Label(frame, text=f"Ficha: {mainData.users[1].symbol}").pack()
+
                 tk.Button(frame, text="Finalizar juego", command=self.gameRoot.destroy).pack(pady=5)
 
                 frame.grid(row=0, column=0, padx=10)
@@ -116,7 +125,7 @@ class TicTacToe:
                     for i in range(size):
                         row = []
                         for j in range(size):
-                            newBox = Box(canvas, mainData, j*side, marginTop+i*side, side, m, i, j, self.callBack)
+                            newBox = Box(canvas, mainData, j*side, marginTop+i*side, side, m, i, j, self.callBack, interfaceElements)
                             row.append(newBox)
                         newBoard.append(row)
                     self.board.addBoard(newBoard)

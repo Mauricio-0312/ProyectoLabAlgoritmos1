@@ -6,7 +6,8 @@ from User import *
 from typing import List
 
 class Box:
-    def __init__(self, canvas: tk.Canvas, mainData, x:int, y:int, l:int, subBoardId: int, row: int, column: int, callBack) -> None:
+    def __init__(self, canvas: tk.Canvas, mainData, x:int, y:int, l:int, subBoardId: int, row: int, column: int, callBack, 
+                 changingInterfaceElements: List[tk.Label]) -> None:
         self.canvas = canvas
         self.mainData = mainData
         self.id = self.createEmptyBox(x, y, l)
@@ -15,6 +16,7 @@ class Box:
         self.row = row
         self.column = column
         self.callback = callBack
+        self.changingInterfaceElements = changingInterfaceElements
     
     def createEmptyBox(self, x:int, y:int, l:int):
         rectangle = self.canvas.create_rectangle(x,y,x+l,y+l, outline="black", fill="white")
@@ -37,7 +39,6 @@ class Box:
                 self.symbol = "x"
             
             self.verifyLine()
-            mainData.currentTurn = mainData.currentTurn + 1 if mainData.currentTurn + 1 < len(mainData.users) else 0
 
     def verifyLine(self):
         subBoardId = self.subBoardId
@@ -74,10 +75,43 @@ class Box:
                 self.canvas.itemconfig(self.mainData.board.boards[subBoardId][i][self.mainData.size - 1 - i].id, fill=winColor) 
             
             win = True
+
+        elif all(all(all(element.symbol != "" for element in row) for row in subBoard) for subBoard in self.mainData.board.boards):
+            messagebox.showinfo("Fin de la partida actual", f"¡Hubo un empate!. Cierre esta pestaña para empezar la siguiente partida")
+            
+            # Switch symbols
+            temp = self.mainData.users[0].symbol
+            self.mainData.users[0].symbol == self.mainData.users[1].symbol
+            self.mainData.users[1].symbol == temp
+
+            # Set current turn to the first user 
+            self.mainData.currentTurn = 0
+
+            # Get rid off old boards
+            self.mainData.board.boards = []
+
+            self.callback(self.mainData)
+
+            return None
         
         if win:
-            message = messagebox.showinfo("Fin de la partida actual", f"¡El jugador {userName} suma un punto!. Cierre esta pestaña para empezar la siguiente partida")
+            messagebox.showinfo("Fin de la partida actual", f"¡El jugador {userName} suma un punto!. Cierre esta pestaña para empezar la siguiente partida")
+            # Increase points of winning user
             self.mainData.users[self.mainData.currentTurn].points += 1
+           
+            # Set current turn to the first user 
+            self.mainData.currentTurn = 0
+            
+            # Get rid off old boards
             self.mainData.board.boards = []
+            
             self.callback(self.mainData)
+
+            return None
+        
+        # Update current turn
+        self.mainData.currentTurn = self.mainData.currentTurn + 1 if self.mainData.currentTurn + 1 < len(self.mainData.users) else 0
+
+        # Update "current turn" Label
+        self.changingInterfaceElements[0].config(text=f"Turno actual: {self.mainData.users[self.mainData.currentTurn].symbol}")
 
