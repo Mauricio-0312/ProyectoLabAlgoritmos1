@@ -81,8 +81,8 @@ class Box:
             
             # Switch symbols
             temp = self.mainData.users[0].symbol
-            self.mainData.users[0].symbol == self.mainData.users[1].symbol
-            self.mainData.users[1].symbol == temp
+            self.mainData.users[0].symbol = self.mainData.users[1].symbol
+            self.mainData.users[1].symbol = temp
 
             # Set current turn to the first user 
             self.mainData.currentTurn = 0
@@ -99,6 +99,11 @@ class Box:
             # Increase points of winning user
             self.mainData.users[self.mainData.currentTurn].points += 1
            
+            # Switch symbols
+            temp = self.mainData.users[0].symbol
+            self.mainData.users[0].symbol = self.mainData.users[1].symbol
+            self.mainData.users[1].symbol = temp
+
             # Set current turn to the first user 
             self.mainData.currentTurn = 0
             
