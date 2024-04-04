@@ -6,22 +6,27 @@ from User import *
 from typing import List
 
 class Box:
-    def __init__(self, canvas: tk.Canvas, mainData, x:int, y:int, l:int, subBoardId: int, row: int, column: int, callBack, 
-                 changingInterfaceElements: List[tk.Label]) -> None:
+    def __init__(self, canvas: tk.Canvas, mainData, x:int, y:int, l:int, subBoardId: int, row: int, column: int, boardSize: int,
+                  callBack, changingInterfaceElements: List[tk.Label]) -> None:
         self.canvas = canvas
         self.mainData = mainData
-        self.id = self.createEmptyBox(x, y, l)
-        self.symbol = ""
         self.subBoardId = subBoardId
+        self.symbol = ""
         self.row = row
         self.column = column
+        self.boardSize = boardSize
         self.callback = callBack
         self.changingInterfaceElements = changingInterfaceElements
+        self.id = self.createEmptyBox(x, y, l)
     
     def createEmptyBox(self, x:int, y:int, l:int):
-        rectangle = self.canvas.create_rectangle(x,y,x+l,y+l, outline="black", fill="white")
+        boardSize = self.boardSize*l
+        startYCoord = self.subBoardId*boardSize
+        boardMarginTop = (self.subBoardId + 1)*20
+        
+        rectangle = self.canvas.create_rectangle(x, boardMarginTop + startYCoord + y,x+l, boardMarginTop + startYCoord + y+l, outline="black", fill="white")
 
-        self.canvas.tag_bind(rectangle, "<Button-1>", lambda event: self.fillBox(x, y, l, self.mainData))
+        self.canvas.tag_bind(rectangle, "<Button-1>", lambda event: self.fillBox(x, boardMarginTop + startYCoord + y, l, self.mainData))
         return rectangle
 
     def fillBox(self, x, y, l, mainData):

@@ -107,25 +107,38 @@ class TicTacToe:
 
                 frame.grid(row=0, column=0, padx=10)
 
-                width = 1000
-                height=500
-
-                canvas = tk.Canvas(
-                self.gameRoot, 
-                width=width, 
-                height=height
-                )
-                canvas.grid(row=0, column=1, columnspan=4)
-                self.gameRoot.title("N en raya 3D")
-
                 side = 30
                 marginTop = 20
-                for m in range(1):
+                width = side*size
+                height = side*size*size + marginTop*(size+1)
+
+                canvasFrame = tk.Frame(self.gameRoot)
+
+                canvas = tk.Canvas(
+                canvasFrame, 
+                scrollregion=(0,0, width, height)
+                )
+
+                canvas.pack()
+
+                canvasFrame.grid(row=0, column=1, columnspan=4)
+                self.gameRoot.title("N en raya 3D")
+
+
+                # create a scrollbar widget and set its command to the text widget
+                scrollbar = tk.Scrollbar(self.gameRoot, orient='vertical', command=canvas.yview)
+                scrollbar.grid(row=0, column=5, sticky=tk.NS)
+
+                # #  communicate back to the scrollbar
+                canvas['yscrollcommand'] = scrollbar.set
+
+                for m in range(size):
                     newBoard = []
+
                     for i in range(size):
                         row = []
                         for j in range(size):
-                            newBox = Box(canvas, mainData, j*side, marginTop+i*side, side, m, i, j, self.callBack, interfaceElements)
+                            newBox = Box(canvas, mainData, j*side, i*side, side, m, i, j, size, self.callBack, interfaceElements)
                             row.append(newBox)
                         newBoard.append(row)
                     self.board.addBoard(newBoard)
@@ -147,6 +160,51 @@ class TicTacToe:
 if __name__ == "__main__":
     ticTacToe: TicTacToe = TicTacToe()
     ticTacToe.showMainMenu()
+    # root = tk.Tk()
+    # # root.geometry("300x400")
+    # # root.config(width=300, height=100)
+    # # root.resizable(False, False)
+    # root.title("Scrollbar Widget Example")
+
+    # frame = tk.Frame(root)
+    # interfaceElements = []
+    # currentTurn = tk.Label(frame, text=f"Turno actual:")
+    # currentTurn.pack(pady=5)
+    
+    # tk.Label(frame, text=f"Jugador 1:").pack(pady=5)
+    # tk.Label(frame, text=f"Puntos:").pack()
+    # tk.Label(frame, text=f"Ficha:").pack()
+
+    # tk.Label(frame, text=f"Jugador 2:").pack(pady=5)
+    # tk.Label(frame, text=f"Puntos:").pack()
+    # tk.Label(frame, text=f"Ficha:").pack()
+
+    # tk.Button(frame, text="Finalizar juego", command=root.destroy).pack(pady=5)
+
+    # frame.grid(row=0, column=0, padx=10)
+    
+    # canvasFrame = tk.Frame(root)
+
+    # canvas = tk.Canvas(
+    # canvasFrame, 
+    # scrollregion=(0,0, 200, 600)
+    # )
+
+    # canvas.pack()
+
+    # canvasFrame.grid(row=0, column=1, columnspan=4)
+    # root.title("N en raya 3D")
+
+    
+
+    # # create a scrollbar widget and set its command to the text widget
+    # scrollbar = tk.Scrollbar(root, orient='vertical', command=canvas.yview)
+    # scrollbar.grid(row=0, column=5, sticky=tk.NS)
+
+    # # #  communicate back to the scrollbar
+    # canvas['yscrollcommand'] = scrollbar.set
+
+    # root.mainloop()
 
 
 
